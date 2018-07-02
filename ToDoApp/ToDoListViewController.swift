@@ -10,10 +10,18 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
 
-    let itemArray = ["Find Mike","Buy Eggs"]
+    var itemArray = [String]()
+
+    let defaults = UserDefaults.standard
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+       if let  items = defaults.array(forKey: "todolistitems") as? [String]
+       {
+       itemArray=items
+       }
     }
 
     //MARK- Tableview Data Source Methods
@@ -41,6 +49,31 @@ class ToDoListViewController: UITableViewController {
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
+//MARK -Add new item
+    
+    @IBAction func AddItemClicked(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add  new Item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add Item", style: .default ) { (action) in
+            //print(textField.text!)
+            self.itemArray.append(textField.text!)
+            self.defaults.set(self.itemArray, forKey: "todolistitems")
+            self.tableView.reloadData()
+        }
+        alert.addAction(action)
+        
+        alert.addTextField{ (alerTextField) in
+            
+        alerTextField.placeholder = "Crete New Item"
+        textField = alerTextField
+            
+        }
+        
+        
+        
+        present(alert, animated: true, completion: nil)
+    }
 }
 
